@@ -1,0 +1,19 @@
+spring:
+ batch:
+  job:
+   enabled: false
+  jdbc:
+   initialize-schema: always
+# batch-core script sql을 실행
+# batch-core package 안에 초기화 sql 문들이 들어있다.
+# 기본적으로 메모리 DB들은 자동적으로 실행될 때 해당 스크립트들을 실행하고 다른 종류에 데이터베이스들은 위와 같은 설정으로 script sql을 실행시킬 수 있다.
+
+ datasource:
+  driverClassName: org.mariadb.jdbc.Driver
+  url: jdbc:mariadb://34.125.40.125:3306/okestro
+  username: root
+  password: user1234
+
+logging:
+  level:
+    root: info
