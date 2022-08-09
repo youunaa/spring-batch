@@ -1,7 +1,10 @@
 package com.example.batch;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -13,36 +16,28 @@ class BatchApplicationTests {
 
     @Test
     void contextLoads() {
-        System.out.println("getDiskSpace()[1] = " + getDiskSpace()[1]);
+
     }
 
 
-    /**
-     * 디스크 용량
-     */
-    public String[] getDiskSpace() {
-        File root = null;
-        try {
-            root = new File(File.pathSeparator);
-            String[] list = new String[2];
-            list[0] = toMB(root.getTotalSpace());
-            list[1] = toMB(root.getUsableSpace());
-            return list;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+    @Autowired
+    StringRedisTemplate redisTemplate;
 
-    public String[] getCPUProcess() {
-        OperatingSystemMXBean osmx = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-        operatingSystemMXBean.getSystemCpuLoad();
+    @Test
+    public void testStrings() {
+        final String key = "sabarada";
 
-        return list;
-    }
+        final ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
 
-    public String toMB(long size) {
-        return String.valueOf((int) (size / (1024 * 1024)));
+        stringStringValueOperations.set(key, "1"); // redis set 명령어
+        final String result_1 = stringStringValueOperations.get(key); // redis get 명령어
+
+        System.out.println("result_1 = " + result_1);
+
+        stringStringValueOperations.increment(key); // redis incr 명령어
+        final String result_2 = stringStringValueOperations.get(key);
+
+        System.out.println("result_2 = " + result_2);
     }
 
 }
