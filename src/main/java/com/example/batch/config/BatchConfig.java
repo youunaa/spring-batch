@@ -1,10 +1,9 @@
 package com.example.batch.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityManagerFactory;
-
+import com.example.batch.model.Market;
+import com.sun.management.OperatingSystemMXBean;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -16,55 +15,61 @@ import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
-import com.example.batch.model.Market;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import javax.persistence.EntityManagerFactory;
+import java.lang.management.ManagementFactory;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class BatchConfig{
-	
-	private final JobBuilderFactory jobBuilderFactory;
-	private final StepBuilderFactory stepBuilderFactory;
-	private final EntityManagerFactory entityManagerFactory;
-	
-	// exampleJob 생성
-	@Bean
-	public Job exampleJob() throws Exception {
-		return jobBuilderFactory.get("exampleJob")
-				.start(exampleStep()).build();
-	}
-	
-	// exampleStep 생성
-	@Bean
-	@JobScope
-	public Step exampleStep() throws Exception {
-		   return stepBuilderFactory.get("exampleStep")
-	                .<Market, Market>chunk(10)
-	                .reader(reader(null))
-	                .processor(processor(null))
-	                .writer(writer(null))
-	                .build();
-		
-// 		### Tasklet Example ###		   
+public class BatchConfig {
+
+    private final JobBuilderFactory jobBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
+    private final EntityManagerFactory entityManagerFactory;
+
+    private final RedisTemplate<String, String> redisTemplate;
+
+    // exampleJob 생성
+    @Bean
+    public Job exampleJob() throws Exception {
+        return jobBuilderFactory.get("exampleJob")
+                .start(exampleStep())
+                .build();
+    }
+
+    // exampleStep 생성
+    @Bean
+    @JobScope
+    public Step exampleStep() throws Exception {
+        return stepBuilderFactory.get("job 1 ")
+                .<Market, Market>chunk(10)
+                .reader(reader(null))
+                .processor(processor(null))
+                .writer(writer(null))
+                .build();
+
+// 		### Tasklet Example ###
 //		return stepBuilderFactory.get("exampleStep")
-//				.tasklet(new ExampleTasklet()).build();	
-	}
-	
-	@Bean
+//				.tasklet(new ExampleTasklet()).build();
+    }
+
+    @Bean
     @StepScope
-    public JpaPagingItemReader<Market> reader(@Value("#{jobParameters[requestDate]}")  String requestDate) throws Exception {
+    public JpaPagingItemReader<Market> reader(@Value("#{jobParameters[requestDate]}") String requestDate) throws Exception {
         log.info("==> reader value : " + requestDate);
 
         Map<String, Object> parameterValues = new HashMap<>();
         parameterValues.put("price", 1000);
-        
+
         return new JpaPagingItemReaderBuilder<Market>()
                 .pageSize(10)
                 .parameterValues(parameterValues)
@@ -76,7 +81,7 @@ public class BatchConfig{
 
     @Bean
     @StepScope
-    public ItemProcessor<Market, Market> processor(@Value("#{jobParameters[requestDate]}")  String requestDate){
+    public ItemProcessor<Market, Market> processor(@Value("#{jobParameters[requestDate]}") String requestDate) {
         return new ItemProcessor<Market, Market>() {
             @Override
             public Market process(Market market) throws Exception {
@@ -94,7 +99,7 @@ public class BatchConfig{
 
     @Bean
     @StepScope
-    public JpaItemWriter<Market> writer(@Value("#{jobParameters[requestDate]}")  String requestDate){
+    public JpaItemWriter<Market> writer(@Value("#{jobParameters[requestDate]}") String requestDate) {
         log.info("==> writer value : " + requestDate);
 
         return new JpaItemWriterBuilder<Market>()
