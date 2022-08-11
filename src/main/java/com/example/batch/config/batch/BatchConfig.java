@@ -1,6 +1,6 @@
-package com.example.batch.config;
+package com.example.batch.config.batch;
 
-import com.example.batch.model.Market;
+import com.example.batch.model.Metric;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -47,7 +47,7 @@ public class BatchConfig {
     @JobScope
     public Step exampleStep() throws Exception {
         return stepBuilderFactory.get("job 1 ")
-                .<Market, Market>chunk(10)
+                .<Metric, Metric>chunk(10)
                 .reader(reader(null))
                 .processor(processor(null))
                 .writer(writer(null))
@@ -60,16 +60,16 @@ public class BatchConfig {
 
     @Bean
     @StepScope
-    public JpaPagingItemReader<Market> reader(@Value("#{jobParameters[requestDate]}") String requestDate) throws Exception {
+    public JpaPagingItemReader<Metric> reader(@Value("#{jobParameters[requestDate]}") String requestDate) throws Exception {
         log.info("==> reader value : " + requestDate);
 
         Map<String, Object> parameterValues = new HashMap<>();
-        parameterValues.put("price", 1000);
+        parameterValues.put("type", "cpu");
 
-        return new JpaPagingItemReaderBuilder<Market>()
+        return new JpaPagingItemReaderBuilder<Metric>()
                 .pageSize(10)
                 .parameterValues(parameterValues)
-                .queryString("SELECT m FROM Market m WHERE m.price >= : price")
+                .queryString("SELECT value FROM metric WHERE type = : type")
                 .entityManagerFactory(entityManagerFactory)
                 .name("JpaPagingItemReader")
                 .build();
@@ -77,28 +77,28 @@ public class BatchConfig {
 
     @Bean
     @StepScope
-    public ItemProcessor<Market, Market> processor(@Value("#{jobParameters[requestDate]}") String requestDate) {
-        return new ItemProcessor<Market, Market>() {
+    public ItemProcessor<Metric, Metric> processor(@Value("#{jobParameters[requestDate]}") String requestDate) {
+        return new ItemProcessor<Metric, Metric>() {
             @Override
-            public Market process(Market market) throws Exception {
+            public Metric process(Metric metric) throws Exception {
 
-                log.info("==> processor Market : " + market);
+                log.info("==> processor Market : " + metric);
                 log.info("==> processor value : " + requestDate);
 
                 // 100원 추가
-                market.setPrice(market.getPrice() + 100);
+                metric.setValue(metric.getValue() + 100);
 
-                return market;
+                return metric;
             }
         };
     }
 
     @Bean
     @StepScope
-    public JpaItemWriter<Market> writer(@Value("#{jobParameters[requestDate]}") String requestDate) {
+    public JpaItemWriter<Metric> writer(@Value("#{jobParameters[requestDate]}") String requestDate) {
         log.info("==> writer value : " + requestDate);
 
-        return new JpaItemWriterBuilder<Market>()
+        return new JpaItemWriterBuilder<Metric>()
                 .entityManagerFactory(entityManagerFactory)
                 .build();
     }

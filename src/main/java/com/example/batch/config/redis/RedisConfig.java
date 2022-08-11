@@ -1,4 +1,4 @@
-package com.example.batch.config;
+package com.example.batch.config.redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
