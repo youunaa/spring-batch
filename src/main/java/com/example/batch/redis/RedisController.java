@@ -1,5 +1,7 @@
 package com.example.batch.redis;
 
+import com.example.batch.model.Metric;
+import com.example.batch.repository.MetricRepository;
 import com.sun.management.OperatingSystemMXBean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +22,12 @@ import java.lang.management.ManagementFactory;
 public class RedisController {
 
     private final RedisTemplate<String, String> redisTemplate;
+    final private MetricRepository metricRepository;
 
     /**
      * Redis 테스트
      * cpu, 메모리 사용량 저장
+     *
      * @return
      */
     @PostMapping("/redisTest")
@@ -36,6 +40,24 @@ public class RedisController {
         vop.set("freePhysicalMemorySize", String.format("%.2f", (double) osBean.getFreePhysicalMemorySize() / 1024 / 1024 / 1024));
         vop.set("totalPhysicalMemorySize", String.format("%.2f", (double) osBean.getTotalPhysicalMemorySize() / 1024 / 1024 / 1024));
 
+        Metric metric = Metric.builder()
+                .type("cpu")
+                .value(String.format("%.2f", osBean.getSystemCpuLoad() * 100))
+                .build();
+        metricRepository.save(metric);
+
+        metric = Metric.builder()
+                .type("memorySize")
+                .value(String.format("%.2f", (double) osBean.getFreePhysicalMemorySize() / 1024 / 1024 / 1024))
+                .build();
+        metricRepository.save(metric);
+
+        metric = Metric.builder()
+                .type("memoryTotal")
+                .value(String.format("%.2f", (double) osBean.getTotalPhysicalMemorySize() / 1024 / 1024 / 1024))
+                .build();
+        metricRepository.save(metric);
+
         log.info("systemCpuLoad : " + vop.get("systemCpuLoad"));
         log.info("freePhysicalMemorySize : " + vop.get("freePhysicalMemorySize"));
         log.info("totalPhysicalMemorySize : " + vop.get("totalPhysicalMemorySize"));
@@ -45,6 +67,7 @@ public class RedisController {
 
     /**
      * Redis 조회
+     *
      * @param key
      * @return
      */

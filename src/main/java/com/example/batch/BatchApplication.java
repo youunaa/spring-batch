@@ -4,6 +4,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
@@ -12,6 +13,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 @EnableRedisRepositories
 @EnableBatchProcessing // 배치 기능 활성화
 @SpringBootApplication
+@EnableJpaAuditing
 public class BatchApplication {
 
 	public static void main(String[] args) {
