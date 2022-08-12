@@ -24,21 +24,21 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Component
 public class ExampleScheduler {
-	
+
 	private final Job job;
 	private final JobLauncher jobLauncher;
-	
-	@Scheduled(fixedDelay = 30000)
+
+	@Scheduled(fixedDelay = 3000)
 	public void startJob() {
 		try {
 			Map<String, JobParameter> jobParametersMap = new HashMap<>();
-			
+
 			SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date time = new Date();
 
 			String time1 = format1.format(time);
 
-			jobParametersMap.put("requestDate", new JobParameter(time1));
+			jobParametersMap.put("startJob", new JobParameter(time1));
 
 			JobParameters parameters = new JobParameters(jobParametersMap);
 
@@ -47,7 +47,7 @@ public class ExampleScheduler {
 			while (jobExecution.isRunning()) {
 				log.info("isRunning...");
 			}
-			
+
 		} catch (JobExecutionAlreadyRunningException e) {
 			e.printStackTrace();
 		} catch (JobRestartException e) {

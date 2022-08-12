@@ -12,8 +12,8 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 @EnableWebSocket
 @EnableRedisRepositories
 @EnableBatchProcessing // 배치 기능 활성화
-@SpringBootApplication
 @EnableJpaAuditing
+@SpringBootApplication
 public class BatchApplication {
 
 	public static void main(String[] args) {

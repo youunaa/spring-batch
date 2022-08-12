@@ -21,7 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     /**
      * connection을 맺을때 CORS 허용
-     * 스프링 5.3, 스프링부트 2.4 버전 부터 allowCredentials이 true인 경우 setAllowedOrigins 메서드에서 와일드 카드 `'*'`을 사용할 수 없습니다.
+     * 스프링 5.3, 스프링부트 2.4 버전 부터 allowCredentials이 true인 경우 `setAllowedOrigins()`에서 와일드 카드 `'*'` 사용 불가
      * @param registry
      */
     @Override

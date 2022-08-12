@@ -1,4 +1,4 @@
-package com.example.batch.model;
+package com.example.batch.metric.model;
 
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
