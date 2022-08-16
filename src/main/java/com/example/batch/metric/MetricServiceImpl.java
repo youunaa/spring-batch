@@ -16,28 +16,26 @@ import java.lang.management.ManagementFactory;
 public class MetricServiceImpl implements MetricService {
 
     private final MetricRepository metricRepository;
-    public static OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-    public static String cpuVal = String.format("%.2f", osBean.getSystemCpuLoad() * 100);
-    public static String memorySizeVal = String.format("%.2f", (double) osBean.getFreePhysicalMemorySize() / 1024 / 1024 / 1024);
-    public static String memoryTotalVal =String.format("%.2f", (double) osBean.getTotalPhysicalMemorySize() / 1024 / 1024 / 1024);
+
 
     /**
      * JVM(Java Virtual Machine)이 실행 중인 운영 체제에 대한 메트릭 수집
      */
     @Override
     public void saveMetricValue() {
+        OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
 
         for (MetricType type : MetricType.values()) {
             String value = "";
 
             if (type == MetricType.CPU) {
-                value = cpuVal;
+                value = String.format("%.2f", osBean.getSystemCpuLoad() * 100);
             }
             if (type == MetricType.MemorySize) {
-                value = memorySizeVal;
+                value = String.format("%.2f", (double) osBean.getFreePhysicalMemorySize() / 1024 / 1024 / 1024);
             }
             if (type == MetricType.MemoryTotal) {
-                value = memoryTotalVal;
+                value = String.format("%.2f", (double) osBean.getTotalPhysicalMemorySize() / 1024 / 1024 / 1024);
             }
 
             Metric metric = Metric.builder()
