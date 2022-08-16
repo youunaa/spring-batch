@@ -61,7 +61,7 @@ public class BatchConfig {
         Map<String, Object> parameterValues = new HashMap<>();
         parameterValues.put("type", "cpu");
 
-        metricService.saveMetricValue();
+//        metricService.saveMetricValue();
 
         return new JpaPagingItemReaderBuilder<Metric>()
                 .pageSize(10)
