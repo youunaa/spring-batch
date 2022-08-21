@@ -1,32 +1,35 @@
 package com.example.batch.redis;
 
-import com.example.batch.metric.model.Metric;
 import com.example.batch.metric.model.MetricModel;
+
+import java.util.List;
 
 public interface RedisService {
 
     /**
-     * Redis key-value 저장
-     *
-     * @param key
-     * @param value
+     * Redis 저장
+     * @param metricModel
      */
-    void addRedisKey(String key, Object value);
+    void addRedisKey(MetricModel metricModel);
 
     /**
      * Redis 조회
-     *
      * @param key
      * @return
      */
-    Object getRedisKey(String key);
+    String getRedisKey(String key);
 
+    /**
+     * Redis List 저장
+     * @param metric
+     */
     void addRedisList(MetricModel metric);
 
     /**
-     *
+     * Redis List 조회
      * @param key
      * @return
      */
-    void getRedisList(String key);
+    List<String> getRedisList(String key);
+
 }

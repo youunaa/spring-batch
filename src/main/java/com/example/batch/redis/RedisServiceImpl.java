@@ -16,18 +16,17 @@ import java.util.concurrent.TimeUnit;
 @Service("RedisService")
 public class RedisServiceImpl implements RedisService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
     private final RedisTemplate<String, String> redisTemplateList;
 
     /**
-     * Redis key-value 저장
-     * @param key
-     * @param value
+     * Redis 저장
+     * @param metricModel
      */
     @Override
-    public void addRedisKey(String key, Object value) {
-        ValueOperations<String, Object> vop = redisTemplate.opsForValue();
-        vop.set(key, value);
+    public void addRedisKey(MetricModel metricModel) {
+        ValueOperations<String, String> vop = redisTemplate.opsForValue();
+        vop.set(metricModel.getType(), metricModel.getValue());
     }
 
     /**
@@ -36,23 +35,32 @@ public class RedisServiceImpl implements RedisService {
      * @return
      */
     @Override
-    public Object getRedisKey(String key) {
-        ValueOperations<String, Object> vop = redisTemplate.opsForValue();
-        Object value = vop.get(key);
+    public String getRedisKey(String key) {
+        ValueOperations<String, String> vop = redisTemplate.opsForValue();
+        String value = vop.get(key);
         return value;
     }
 
+    /**
+     * Redis List 저장
+     * @param metric
+     */
     @Override
     public void addRedisList(MetricModel metric) {
         ListOperations<String, String> listOps = redisTemplateList.opsForList();
-        listOps.rightPush(metric.getType(), metric.getValue());
+        listOps.rightPush(metric.getType() + "List", metric.getValue());
         // expire time 설정
-        redisTemplateList.expire(metric.getType(), 1, TimeUnit.MINUTES);
+        redisTemplateList.expire(metric.getType(), 5, TimeUnit.MINUTES);
     }
 
+    /**
+     * Redis List 조회
+     * @param key
+     * @return
+     */
     @Override
-    public void getRedisList(String key) {
-        List<String> lists = redisTemplateList.opsForList().range(key, 0, -1);
+    public List<String> getRedisList(String key) {
+        return redisTemplateList.opsForList().range(key, 0, -1);
     }
 
 }

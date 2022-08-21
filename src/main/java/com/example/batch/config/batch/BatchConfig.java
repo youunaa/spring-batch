@@ -69,6 +69,7 @@ public class BatchConfig {
                                 .value(value)
                                 .build();
 
+                        redisService.addRedisKey(metric);
                         redisService.addRedisList(metric);
                     }
                     return RepeatStatus.FINISHED;

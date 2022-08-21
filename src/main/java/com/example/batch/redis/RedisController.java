@@ -3,12 +3,11 @@ package com.example.batch.redis;
 import com.example.batch.base.BaseController;
 import com.example.batch.base.BaseModel;
 import com.example.batch.base.BodyModel;
+import com.example.batch.metric.model.MetricModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -18,17 +17,20 @@ import java.util.Map;
 public class RedisController extends BaseController {
 
     private final RedisService redisService;
-    private final RedisTemplate<String, String> redisTemplate;
 
     /**
-     * Redis key-value 저장
+     * Redis 저장
      * @param param
      * @return
      */
     @PostMapping("/add")
     public BaseModel addRedisKey(@RequestBody Map<String, Object> param) {
         BodyModel body = new BodyModel();
-        redisService.addRedisKey(param.get("key").toString(), param.get("value"));
+        MetricModel model = MetricModel.builder()
+                .type(param.get("key").toString())
+                .value(param.get("value").toString())
+                .build();
+        redisService.addRedisKey(model);
         return ok(body);
     }
 
@@ -45,19 +47,14 @@ public class RedisController extends BaseController {
     }
 
     /**
-     * Redis List 조회 테스트
-     * @param value
+     * Redis List 조회
+     * @param key
      * @return
      */
-    @GetMapping("/list/{value}")
-    public BaseModel getRedisList(@PathVariable String value) {
+    @GetMapping("/list/{key}")
+    public BaseModel getRedisList(@PathVariable String key) {
         BodyModel body = new BodyModel();
-
-        redisTemplate.opsForList().rightPush("cpu_list", value);
-
-        List<String> lists = redisTemplate.opsForList().range("cpu_list", 0, -1);
-
-        body.setBody(lists);
+        body.setBody(redisService.getRedisList(key));
         return ok(body);
     }
 
