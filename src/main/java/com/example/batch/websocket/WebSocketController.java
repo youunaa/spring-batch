@@ -1,7 +1,6 @@
 package com.example.batch.websocket;
 
 import com.example.batch.metric.model.Metric;
-import com.example.batch.metric.model.MetricType;
 import com.example.batch.websocket.model.Socket;
 import com.sun.management.OperatingSystemMXBean;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -14,7 +13,6 @@ import java.lang.management.ManagementFactory;
 public class WebSocketController {
 
     /**
-     *
      * @param socketVO
      * @return
      */
