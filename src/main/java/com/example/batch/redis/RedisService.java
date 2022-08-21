@@ -3,9 +3,11 @@ package com.example.batch.redis;
 public interface RedisService {
 
     /**
-     * Redis 저장
-     * JVM(Java Virtual Machine)이 실행 중인 운영 체제에 대한 메트릭 수집
+     * Redis key-value 저장
+     * @param key
+     * @param value
      */
-    void setRedisMetricValue();
+    void addRedisKey(String key, Object value);
 
+    Object getRedisKey(String key);
 }

@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@EnableScheduling // 스케쥴러 기능 활성화
+//@EnableScheduling // 스케쥴러 기능 활성화
 @RequiredArgsConstructor
 @Component
 public class ExampleScheduler {
@@ -38,7 +38,7 @@ public class ExampleScheduler {
 
 			String time1 = format1.format(time);
 
-			jobParametersMap.put("startJob", new JobParameter(time1));
+			jobParametersMap.put("requestDate", new JobParameter(time1));
 
 			JobParameters parameters = new JobParameters(jobParametersMap);
 

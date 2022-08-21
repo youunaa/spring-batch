@@ -1,47 +1,45 @@
 package com.example.batch.redis;
 
+import com.example.batch.base.BaseController;
+import com.example.batch.base.BaseModel;
+import com.example.batch.base.BodyModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping("redis")
 @RestController
-public class RedisController {
+public class RedisController extends BaseController {
 
-    private final RedisTemplate<String, String> redisTemplate;
     private final RedisService redisService;
 
     /**
-     * Redis 저장
-     * JVM(Java Virtual Machine)이 실행 중인 운영 체제에 대한 메트릭 수집
+     * Redis key-value 저장
+     * @param param
      * @return
      */
-    @PostMapping("/redisTest")
-    public ResponseEntity<?> addRedisKey() {
-
-        redisService.setRedisMetricValue();
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @PostMapping("/add")
+    public BaseModel addRedisKey(@RequestBody Map<String, Object> param) {
+        BodyModel body = new BodyModel();
+        redisService.addRedisKey(param.get("key").toString(), param.get("value"));
+        return ok(body);
     }
 
     /**
      * Redis 조회
+     *
      * @param key
      * @return
      */
-    @GetMapping("/redisTest/{key}")
-    public ResponseEntity<?> getRedisKey(@PathVariable String key) {
-        ValueOperations<String, String> vop = redisTemplate.opsForValue();
-        String value = vop.get(key);
-        return new ResponseEntity<>(value, HttpStatus.OK);
+    @GetMapping("/{key}")
+    public BaseModel getRedisKey(@PathVariable String key) {
+        BodyModel body = new BodyModel();
+        body.setBody(redisService.getRedisKey(key));
+        return ok(body);
     }
 
 }
