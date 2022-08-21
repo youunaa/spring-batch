@@ -2,7 +2,9 @@ package com.example.batch.config.batch;
 
 import com.example.batch.metric.MetricService;
 import com.example.batch.metric.model.Metric;
+import com.example.batch.metric.model.MetricModel;
 import com.example.batch.metric.model.MetricType;
+import com.example.batch.redis.RedisService;
 import com.sun.management.OperatingSystemMXBean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ public class BatchConfig {
     private final StepBuilderFactory stepBuilderFactory;
     private final EntityManagerFactory entityManagerFactory;
     private final MetricService metricService;
+    private final RedisService redisService;
 
     // Job 생성
     @Bean
@@ -61,10 +64,12 @@ public class BatchConfig {
 
                         log.info("Target : [ " + type.name() + " ] : " + value);
 
-                        Metric metric = Metric.builder()
+                        MetricModel metric = MetricModel.builder()
                                 .type(type.name())
                                 .value(value)
                                 .build();
+
+                        redisService.addRedisList(metric);
                     }
                     return RepeatStatus.FINISHED;
                 })

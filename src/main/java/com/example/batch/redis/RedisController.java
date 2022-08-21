@@ -5,8 +5,10 @@ import com.example.batch.base.BaseModel;
 import com.example.batch.base.BodyModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -16,6 +18,7 @@ import java.util.Map;
 public class RedisController extends BaseController {
 
     private final RedisService redisService;
+    private final RedisTemplate<String, String> redisTemplate;
 
     /**
      * Redis key-value 저장
@@ -38,6 +41,23 @@ public class RedisController extends BaseController {
     public BaseModel getRedisKey(@PathVariable String key) {
         BodyModel body = new BodyModel();
         body.setBody(redisService.getRedisKey(key));
+        return ok(body);
+    }
+
+    /**
+     * Redis List 조회 테스트
+     * @param value
+     * @return
+     */
+    @GetMapping("/list/{value}")
+    public BaseModel getRedisList(@PathVariable String value) {
+        BodyModel body = new BodyModel();
+
+        redisTemplate.opsForList().rightPush("cpu_list", value);
+
+        List<String> lists = redisTemplate.opsForList().range("cpu_list", 0, -1);
+
+        body.setBody(lists);
         return ok(body);
     }
 
