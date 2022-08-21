@@ -32,8 +32,4 @@ public class Metric {
     @Column(name = "create_dt")
     private LocalDateTime createDt;
 
-    private String cpuVal;
-    private String memorySize;
-    private String memoryTotal;
-
 }

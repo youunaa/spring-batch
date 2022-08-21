@@ -50,7 +50,7 @@ public class RedisServiceImpl implements RedisService {
         ListOperations<String, String> listOps = redisTemplateList.opsForList();
         listOps.rightPush(metric.getType() + "List", metric.getValue());
         // expire time 설정
-        redisTemplateList.expire(metric.getType(), 5, TimeUnit.MINUTES);
+        redisTemplateList.expire(metric.getType(), 1, TimeUnit.MINUTES);
     }
 
     /**

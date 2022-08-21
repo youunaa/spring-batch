@@ -1,6 +1,7 @@
 package com.example.batch.websocket;
 
 import com.example.batch.metric.model.Metric;
+import com.example.batch.metric.model.MetricModel;
 import com.example.batch.metric.model.MetricType;
 import com.example.batch.redis.RedisService;
 import com.example.batch.websocket.model.Socket;
@@ -21,8 +22,8 @@ public class WebSocketController {
      */
     @SendTo("/send")
     @MessageMapping("/receive")
-    public Metric SocketHandler(Socket socketVO) {
-        Metric metric = Metric.builder()
+    public MetricModel SocketHandler(Socket socketVO) {
+        MetricModel metric = MetricModel.builder()
                 .cpuVal(redisService.getRedisKey(MetricType.CPU.name()))
                 .memorySize(redisService.getRedisKey(MetricType.MemorySize.name()))
                 .memoryTotal(redisService.getRedisKey(MetricType.MemoryTotal.name()))
