@@ -31,7 +31,6 @@ public class RedisController extends BaseController {
 
     /**
      * Redis 조회
-     *
      * @param key
      * @return
      */

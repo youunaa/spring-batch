@@ -24,6 +24,11 @@ public class RedisServiceImpl implements RedisService {
         vop.set(key, value);
     }
 
+    /**
+     * Redis 조회
+     * @param key
+     * @return
+     */
     @Override
     public Object getRedisKey(String key) {
         ValueOperations<String, Object> vop = redisTemplate.opsForValue();

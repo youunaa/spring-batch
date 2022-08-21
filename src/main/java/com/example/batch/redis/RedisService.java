@@ -9,5 +9,10 @@ public interface RedisService {
      */
     void addRedisKey(String key, Object value);
 
+    /**
+     * Redis 조회
+     * @param key
+     * @return
+     */
     Object getRedisKey(String key);
 }

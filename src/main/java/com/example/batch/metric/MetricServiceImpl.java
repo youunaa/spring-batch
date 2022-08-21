@@ -2,7 +2,6 @@ package com.example.batch.metric;
 
 import com.example.batch.metric.model.Metric;
 import com.example.batch.metric.model.MetricType;
-import com.example.batch.metric.repository.MetricRepository;
 import com.sun.management.OperatingSystemMXBean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +14,10 @@ import java.lang.management.ManagementFactory;
 @Service("MetricService")
 public class MetricServiceImpl implements MetricService {
 
-    private final MetricRepository metricRepository;
-
     /**
-     * JVM(Java Virtual Machine)이 실행 중인 운영 체제에 대한 메트릭 수집
+     * JVM(Java Virtual Machine)이 실행 중인 운영 체제에 대한 메트릭 조회
+     * @param metricType
+     * @return
      */
     @Override
     public Metric getJVMMetricInfo(MetricType metricType) {
